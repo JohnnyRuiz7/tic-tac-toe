@@ -495,7 +495,7 @@ const Game = (() => {
 
     function showWinner() {
         board.forEach(element => element.removeEventListener('click', gameMode[gameType]))
-        winMessage.textContent = `Congratulations, the winner is ${players[playerTurn].name}`
+        winMessage.textContent = `The winner is ${players[playerTurn].name}`
         gameContainer.style.filter = 'blur(5px)'
         winMessage.style.display = 'flex'
         setTimeout(() => {
