@@ -223,16 +223,17 @@ const Game = (() => {
     }
 
     function mediumAI() {
-        let randomMove = Math.floor(Math.random() * moves.length)
-        let randomCorner = Math.floor(Math.random() * boardCorners.length)
-        let cornerMove = boardCorners[randomCorner].id.slice(-1) - 1
-        if (typeof moves[cornerMove] === 'number' && randomMove < 7) {
-            board[cornerMove].textContent = players[playerTurn].mark
-            board[cornerMove].removeEventListener('click', gameMode[gameType])
-            moves[cornerMove] = players[playerTurn].mark
+        if (cpuMoves === 1) {
+            initialMove()
+            cpuMoves++
+        }
+        else if (cpuMoves === 2){
+            blockPlayer()
+            cpuMoves++
         }
         else {
-            easyAI()
+            randomMove()
+            cpuMoves++
         }
     }
 
@@ -259,22 +260,55 @@ const Game = (() => {
     }
 
     function Strategy(cpuMark) {
+        let movesCheck = [1, 2, 3]
+        let movesCheckIndexes = [1, 2, 3]
         if (cpuMark === 'x') {
             for (let i = 0; i < boardSides.length; i++) {
-                if (typeof moves[boardSides[i].id.slice(-1) - 1] === 'number') {
-                    let oppositeCorner = Math.abs(9 - moves.indexOf(players[1].mark))
-                    return movement(oppositeCorner - 1)
+                if (typeof moves[boardSides[i].id.slice(-1) - 1] !== 'number' && typeof moves[4] === 'number' && playerMoveCount === 1) {
+                    return movement(4)
                 }
+                else if (cpuMoves !== moveCount && playerMoveCount === 2) {
+                    for (let i = 0; i < moves.length; i += 3) {
+                        movesCheck = [moves[i], moves[i + 1], moves[i + 2]]
+                        movesCheckIndexes = [i, i + 1, i + 2]
+                        if (!movesCheck.includes('o') && i !== 3 && !movesCheck.every(Number)) {
+                            let move = movesCheck.find(element => {if (typeof element === 'number' && element % 2 !== 0) {return element}})
+                            return movement(move - 1)
+                        }
+                    }
+                    for (let i = 0; i < 3; i++) {
+                        movesCheck = [moves[i], moves[i + 3], moves[i + 6]]
+                        movesCheckIndexes = [i, i + 3, i + 6]
+                        if (!movesCheck.includes('o') && i != 1 && 
+                            typeof (moves[movesCheck.indexOf('x')] + 6)) {
+                            let move = movesCheck.find(element => {if (typeof element === 'number' && element % 2 !== 0) {return element}})
+                            return movement(move - 1)
+                        }
+                    }
+                }
+            }
+            for (let i = 0; i < boardSides.length; i++) {
+                if (typeof moves[boardSides[i].id.slice(-1) - 1] === 'number' && typeof moves[Math.abs(8 - moves.indexOf(players[1].mark))] === 'number') {
+                    let oppositeCorner = Math.abs(8 - moves.indexOf(players[1].mark))
+                    return movement(oppositeCorner)
+                }
+                else if (i === boardSides.length - 1 && cpuMoves !== moveCount) {
+                    return playCorner()
+                }
+            }
+            if (cpuMoves !== moveCount) {
+                randomMove()
             }
         }
 
         else if (cpuMark === 'o') {
-            let movesCheck = [1, 2, 3]
-            let movesCheckIndexes = [1, 2, 3]
             if (moves.indexOf(players[0].mark) + moves.lastIndexOf(players[0].mark) === 8) {
                 return playSide()
             }
             else if (playerMoveCount === 2 && (moves.indexOf('x') + moves.lastIndexOf('x')) % 2 === 0) {
+                if (typeof moves[4] !== 'number') {
+                    return playCorner()
+                }
                 for (let i = 0; i < moves.length; i += 3) {
                     movesCheck = [moves[i], moves[i + 1], moves[i + 2]]
                     movesCheckIndexes = [i, i + 1, i + 2]
@@ -295,12 +329,16 @@ const Game = (() => {
             else if (playerMoveCount === 2 && (moves.indexOf('x') + moves.lastIndexOf('x')) % 2 !== 0) {
                 for (let i = 0; i < boardCorners.length; i++) {
                     if (moves[boardCorners[i].id.slice(-1) - 1] === 'x') {
-                        console.log(boardCorners[i])
                         let oppositeCorner = Math.abs(9 - boardCorners[i].id.slice(-1))
                         return movement(oppositeCorner)
                     }
                 }
             }
+
+            else if (playerMoveCount === 3 && typeof moves[4] === 'number') {
+                return movement(4)
+            }
+
             else if (cpuMoves !== moveCount) {
                 return randomMove()
             }
@@ -351,7 +389,7 @@ const Game = (() => {
             if (playerMoves.indexOf(players[0].mark) !== playerMoves.lastIndexOf(players[0].mark) && typeof moves[playerMoves.find(Number) - 1] === 'number') {
                 return movement(playerMoves.find(Number) - 1)
             }
-            else if (cpuMoves !== moveCount) {
+            else if (i === 2 && cpuMoves !== moveCount) {
                 return Strategy(players[1].mark)
             }
         }
@@ -396,20 +434,7 @@ const Game = (() => {
             initialMove()
             cpuMoves++
         }
-        
-        else if (cpuMoves === 2) {
-            winAttempt()
-            cpuMoves++
-        }
-        else if (cpuMoves === 3) {
-            winAttempt()
-            cpuMoves++
-        }
-        else if (cpuMoves === 4) {
-            winAttempt()
-            cpuMoves++
-        }
-        else if (cpuMoves === 5) {
+        else {
             winAttempt()
             cpuMoves++
         }
@@ -419,7 +444,7 @@ const Game = (() => {
 
         switch (chosenDifficulty) {
             case 'Easy':
-                easyAI()
+                randomMove()
                 break;
             case 'Medium':
                 mediumAI()
@@ -443,9 +468,9 @@ const Game = (() => {
         boardContainer.style.display = 'none'
         cpuMoves = 1
         moveCount = 0
-        playerTurn = 0
-        playerMoveCount = 0
         gameType = 0
+        playerMoveCount = 0
+        playerTurn = 0
         players[0].mark = 'x'
         players[1].mark = 'o'
         clearForm(gameSettings)
@@ -470,6 +495,7 @@ const Game = (() => {
 
     function showWinner() {
         board.forEach(element => element.removeEventListener('click', gameMode[gameType]))
+        winMessage.textContent = `Congratulations, the winner is ${players[playerTurn].name}`
         gameContainer.style.filter = 'blur(5px)'
         winMessage.style.display = 'flex'
         setTimeout(() => {
@@ -483,25 +509,21 @@ const Game = (() => {
     function checkWinner() {
         for (let i = 0; i < moves.length; i += 3) {
             if (moves[i] === moves[i + 1] && moves[i + 1] === moves[i + 2]) {
-                showWinner()
-                winMessage.textContent = `Congratulations, the winner is ${players[playerTurn].name}`
+                return showWinner()
             }
         }
         for (let i = 0; i < moves.length; i++) {
             if (moves[i] === moves[i + 3] && moves[i + 3] === moves[i + 6]) {
-                showWinner()
-                winMessage.textContent = `Congratulations, the winner is ${players[playerTurn].name}`
+                return showWinner()
             }
         }
         for (let i = 0; i < 4; i += 2) {
             if (moves[i] === moves[8 - i] && moves[4] === moves[i]) {
-                showWinner()
-                winMessage.textContent = `Congratulations, the winner is ${players[playerTurn].name}`
-                break
+                return showWinner()
             }
             else if (i === 2 && moves.every((element) => isNaN(element))) {
-                    showWinner()
-                    winMessage.textContent = `It's a draw`
+                showWinner()
+                winMessage.textContent = `It's a draw`
             }
         }
     }
