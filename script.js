@@ -30,6 +30,11 @@ const Game = (() => {
     let boardSides = document.querySelectorAll('.side')
     let winMessage = document.querySelector('#win-message')
     let gameContainer = document.querySelector('.game-container')
+    let difficultyButtons 
+    let markbuttons
+    let playerOneName
+    let xMark
+    let oMark
 
     mainMenuButton.addEventListener('click', mainMenu)
     onePlayerButton.addEventListener('click', onePlayerGame)
