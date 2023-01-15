@@ -311,8 +311,9 @@ const Game = (() => {
                 return playSide()
             }
             else if (playerMoveCount === 2 && (moves.indexOf('x') + moves.lastIndexOf('x')) % 2 === 0) {
-                if (typeof moves[4] !== 'number') {
-                    return playCorner()
+                if (typeof moves[4] === 'number') {
+                    console.log('here')
+                    return movement(4)
                 }
                 for (let i = 0; i < moves.length; i += 3) {
                     movesCheck = [moves[i], moves[i + 1], moves[i + 2]]
@@ -413,20 +414,26 @@ const Game = (() => {
     }
 
     function initialMove() {
+        let movesCheck = [1, 2, 3]
+        let possibleMoves = []
         for (let i = 0; i < boardCorners.length; i++) {
             if (typeof moves[boardCorners[i].id.slice(-1) - 1] !== 'number') {
                 return movement(4)
             }
         }
-        for (let i = 0; i < boardSides.length; i++) {
-            if (typeof moves[boardSides[i].id.slice(-1) - 1] !== 'number') {
-                let move = Math.abs(boardSides[i].id.slice(-1) - 8)
-                if (move === 2 || move === 4) {
-                    return movement(Math.abs(move) - 2)
-                }
-                else if (move === 0 || move === 6) {
-                    return movement(Math.abs(move))
-                }
+        for (let i = 0; i < moves.length; i += 3) {
+            movesCheck = [moves[i], moves[i + 1], moves[i + 2]]
+            if (movesCheck.includes('x')) {
+                for (element of movesCheck) {if (typeof element === 'number') {possibleMoves.push(element - 1)}}
+            }
+        }
+        for (let i = 0; i < moves.length; i++) {
+            movesCheck = [moves[i], moves[i + 3], moves[i + 6]]
+            movesCheckIndexes = [i, i + 3, i + 6]
+            if (movesCheck.includes('x')) {
+                for (element of movesCheck) {if (typeof element === 'number') {possibleMoves.push(element - 1)}}
+                let move = possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
+                return movement(move)
             }
         }
         if (cpuMoves !== moveCount) {
