@@ -308,7 +308,7 @@ const Game = (() => {
                 return playSide()
             }
 
-            else if (playerMoveCount === 2 && moves[Math.abs(moves.indexOf('o')) - 8]) {
+            else if (playerMoveCount === 2 && moves[Math.abs(moves.indexOf('o')) - 8] && typeof moves[4] !== 'number') {
                 return playCorner()
             }
             
@@ -319,7 +319,6 @@ const Game = (() => {
                 
                 for (let i = 0; i < boardSides.length; i++) {
                     if (moves[boardSides[i].id.slice(-1) - 1] === 'x') {
-                        console.log('a')
                         let move = boardSides[i].id.slice(-1) - 1
                         console.log(move)
                         if ((move === 1 || move === 7) && typeof moves[move - 1] === 'number') {
