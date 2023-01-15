@@ -307,29 +307,32 @@ const Game = (() => {
             if (playerMoveCount === 2 && moves.indexOf(players[0].mark) + moves.lastIndexOf(players[0].mark) === 8) {
                 return playSide()
             }
-
-            else if (playerMoveCount === 2 || playerMoveCount === 3) {
+            
+            else {
                 if (typeof moves[4] === 'number') {
+                    console.log('h')
                     return movement(4)
                 }
-
+                
                 for (let i = 0; i < boardSides.length; i++) {
                     if (moves[boardSides[i].id.slice(-1) - 1] === 'x') {
                         let move = boardSides[i].id.slice(-1) - 1
+                        console.log(move)
                         if (move === 1 || move === 7 && typeof moves[move - 1] === 'number') {
                             move--
+                            console.log('h')
                             return movement(move)
                         }
                         else if (move === 3 || move === 5 && typeof moves[move - 3] === 'number') {
                             move -= 3
+                            console.log('h')
                             return movement(move)
+                        }
+                        else if (cpuMoves !== moveCount) {
+                            return randomMove()
                         }
                     }
                 }
-            }
-            
-            else if (cpuMoves !== moveCount) {
-                return randomMove()
             }
         }
     }
