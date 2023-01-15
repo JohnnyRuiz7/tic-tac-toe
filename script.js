@@ -400,6 +400,9 @@ const Game = (() => {
     function initialMove() {
         let movesCheck = [1, 2, 3]
         let possibleMoves = []
+        if (typeof moves[4] !== 'number') {
+            return playCorner()
+        }
         for (let i = 0; i < boardCorners.length; i++) {
             if (typeof moves[boardCorners[i].id.slice(-1) - 1] !== 'number') {
                 return movement(4)
