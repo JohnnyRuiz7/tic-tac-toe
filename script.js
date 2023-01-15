@@ -318,14 +318,12 @@ const Game = (() => {
                     if (moves[boardSides[i].id.slice(-1) - 1] === 'x') {
                         let move = boardSides[i].id.slice(-1) - 1
                         console.log(move)
-                        if (move === 1 || move === 7 && typeof moves[move - 1] === 'number') {
+                        if ((move === 1 || move === 7) && typeof moves[move - 1] === 'number') {
                             move--
-                            console.log('h')
                             return movement(move)
                         }
-                        else if (move === 3 || move === 5 && typeof moves[move - 3] === 'number') {
+                        else if ((move === 3 || move === 5) && typeof moves[move - 3] === 'number') {
                             move -= 3
-                            console.log('h')
                             return movement(move)
                         }
                         else if (cpuMoves !== moveCount) {
