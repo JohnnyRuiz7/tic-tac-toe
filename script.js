@@ -221,7 +221,6 @@ const Game = (() => {
             board[move].textContent = players[playerTurn].mark
             board[move].removeEventListener('click', gameMode[gameType])
             moves[move] = players[playerTurn].mark
-            console.log('random')
         }
         else {
             randomMove()
@@ -307,11 +306,12 @@ const Game = (() => {
         }
 
         else if (cpuMark === 'o') {
+            
             if (playerMoveCount === 2 && moves.indexOf(players[0].mark) + moves.lastIndexOf(players[0].mark) === 8) {
                 return playSide()
             }
             
-            else if (playerMoveCount === 2 && moves[Math.abs(moves.indexOf('o')) - 8] === 'x' && typeof moves[4] !== 'number') {
+            else if (playerMoveCount === 2 && moves[Math.abs(moves.indexOf('o') - 8)] === 'x' && typeof moves[4] !== 'number') {
                 return playCorner()
             }
             
