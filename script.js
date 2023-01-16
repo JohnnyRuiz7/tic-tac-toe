@@ -221,6 +221,7 @@ const Game = (() => {
             board[move].textContent = players[playerTurn].mark
             board[move].removeEventListener('click', gameMode[gameType])
             moves[move] = players[playerTurn].mark
+            console.log('random')
         }
         else {
             randomMove()
@@ -266,6 +267,8 @@ const Game = (() => {
 
     function Strategy(cpuMark) {
         let movesCheck = [1, 2, 3]
+        let movesIndexes = [1, 2, 3]
+        let possibleMoves = []
         if (cpuMark === 'x') {
             for (let i = 0; i < boardSides.length; i++) {
                 if (typeof moves[boardSides[i].id.slice(-1) - 1] !== 'number' && typeof moves[4] === 'number' && playerMoveCount === 1) {
@@ -307,8 +310,8 @@ const Game = (() => {
             if (playerMoveCount === 2 && moves.indexOf(players[0].mark) + moves.lastIndexOf(players[0].mark) === 8) {
                 return playSide()
             }
-
-            else if (playerMoveCount === 2 && moves[Math.abs(moves.indexOf('o')) - 8] && typeof moves[4] !== 'number') {
+            
+            else if (playerMoveCount === 2 && moves[Math.abs(moves.indexOf('o')) - 8] === 'x' && typeof moves[4] !== 'number') {
                 return playCorner()
             }
             
@@ -316,23 +319,47 @@ const Game = (() => {
                 if (typeof moves[4] === 'number') {
                     return movement(4)
                 }
+
+                if (moves[4] === 'o' && playerMoveCount === 2) {
+                    for (let i = 0; i < moves.length; i += 3) {
+                        movesCheck = [moves[i], moves[i + 1], moves[i + 2]]
+                        movesIndexes = [i, i + 1, i + 2]
+                        if (movesCheck.includes('x') && movesCheck.includes('o')) {
+                            possibleMoves.push(movesIndexes[movesCheck.indexOf('x')] + 3, movesIndexes[movesCheck.indexOf('x')] - 3, 1, 7)
+                            let move = possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
+                            return movement(move)
+                        }
+                    }
+                    for (let i = 0; i < moves.length; i++) {
+                        movesCheck = [moves[i], moves[i + 3], moves[i + 6]]
+                        movesIndexes = [i, i + 3, i + 6]
+                        if (movesCheck.includes('x') && movesCheck.includes('o')) {
+                            possibleMoves.push(movesIndexes[movesCheck.indexOf('x')] + 1, movesIndexes[movesCheck.indexOf('x')] - 1, 3, 5)
+                            let move = possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
+                            return movement(move)
+                        }
+                    }
+                }
                 
                 for (let i = 0; i < boardSides.length; i++) {
                     if (moves[boardSides[i].id.slice(-1) - 1] === 'x') {
                         let move = boardSides[i].id.slice(-1) - 1
                         console.log(move)
-                        if ((move === 1 || move === 7) && typeof moves[move - 1] === 'number') {
-                            move--
-                            return movement(move)
+                        for (let i = 0; i < moves.length; i += 3) {
+                            movesCheck = [moves[i], moves[i + 1], moves[i + 2]]
+                            if (!movesCheck.includes('o') && i !== 3 && !movesCheck.every(Number)) {
+                                let move = movesCheck.find(element => {if (typeof element === 'number' && element % 2 !== 0) {return element}})
+                                return movement(move - 1)
+                            }
                         }
-                        else if ((move === 3 || move === 5) && typeof moves[move - 3] === 'number') {
-                            move -= 3
-                            return movement(move)
+                        for (let i = 0; i < 3; i++) {
+                            movesCheck = [moves[i], moves[i + 3], moves[i + 6]]
+                            if (!movesCheck.includes('o') && i != 1 && 
+                                typeof (moves[movesCheck.indexOf('x')] + 6)) {
+                                let move = movesCheck.find(element => {if (typeof element === 'number' && element % 2 !== 0) {return element}})
+                                return movement(move - 1)
+                            }
                         }
-                    }
-
-                    else if (cpuMoves !== moveCount) {
-                        return playCorner()
                     }
 
                     else if (cpuMoves !== moveCount) {
