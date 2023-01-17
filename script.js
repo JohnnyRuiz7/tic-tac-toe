@@ -314,8 +314,37 @@ const Game = (() => {
             else if (playerMoveCount === 2 && moves[Math.abs(moves.indexOf('o') - 8)] === 'x' && typeof moves[4] !== 'number') {
                 return playCorner()
             }
-            
+
             else {
+                let hLine = []
+                let vLine = []
+                for (let i = 0; i < moves.length; i += 3) {
+                    movesCheck = [moves[i], moves[i + 1], moves[i + 2]]
+                    if (movesCheck.includes('x') && !movesCheck.includes('o') && movesCheck.indexOf('x') % 2 !== 0) {
+                        for (element of movesCheck) {
+                            hLine.push(element)
+                        }
+                        console.log(hLine)
+                    }
+                }
+
+                for (let i = 0; i < 3; i++) {
+                    movesCheck = [moves[i], moves[i + 3], moves[i + 6]]
+                    if (movesCheck.includes('x') && !movesCheck.includes('o') &&movesCheck.indexOf('x') % 2 !== 0) {
+                        for (element of movesCheck) {
+                            vLine.push(element)
+                        }
+                        console.log(vLine)
+                        let move = hLine.filter(element => vLine.includes(element))
+                        move = move.find(Number) - 1
+                        console.log(move)
+                        if (typeof moves[move] === 'number') {
+                            console.log('yes')
+                            return movement(move)
+                        }
+                    }
+                }
+
                 if (typeof moves[4] === 'number') {
                     return movement(4)
                 }
