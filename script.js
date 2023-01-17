@@ -324,7 +324,6 @@ const Game = (() => {
                         for (element of movesCheck) {
                             hLine.push(element)
                         }
-                        console.log(hLine)
                     }
                 }
 
@@ -334,12 +333,9 @@ const Game = (() => {
                         for (element of movesCheck) {
                             vLine.push(element)
                         }
-                        console.log(vLine)
                         let move = hLine.filter(element => vLine.includes(element))
                         move = move.find(Number) - 1
-                        console.log(move)
                         if (typeof moves[move] === 'number') {
-                            console.log('yes')
                             return movement(move)
                         }
                     }
@@ -373,7 +369,6 @@ const Game = (() => {
                 for (let i = 0; i < boardSides.length; i++) {
                     if (moves[boardSides[i].id.slice(-1) - 1] === 'x') {
                         let move = boardSides[i].id.slice(-1) - 1
-                        console.log(move)
                         for (let i = 0; i < moves.length; i += 3) {
                             movesCheck = [moves[i], moves[i + 1], moves[i + 2]]
                             if (!movesCheck.includes('o') && i !== 3 && !movesCheck.every(Number)) {
